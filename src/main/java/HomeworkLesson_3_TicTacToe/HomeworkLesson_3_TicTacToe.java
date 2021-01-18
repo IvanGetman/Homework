@@ -28,10 +28,6 @@ public class HomeworkLesson_3_TicTacToe {
     public static void main(String[] args) {
         initField();
         printField();
-        humanTurn();
-        printField();
-        aiFirstTurn();
-        printField();
 
         while (true) {
             humanTurn();
@@ -93,42 +89,18 @@ public class HomeworkLesson_3_TicTacToe {
 
     }
 
-    public static void aiFirstTurn() {
-        do {
-            x_Ai = random.nextInt(fieldSizeX);
-            y_Ai = random.nextInt(fieldSizeY);
-        } while (!isCellEmpty(y_Ai, x_Ai));
-        System.out.println("Координаты хода компьютера в формате X Y: " + (x_Ai + 1) + " " + (y_Ai + 1));
-        field[y_Ai][x_Ai] = DOT_AI;
-    }
-
-
     public static void aiTurn() {
-        boolean key = true;
-        outerloop:
-        for (int y = 0; y < fieldSizeY; y++) {
-            for (int x = 0; x < fieldSizeX; x++) {
-                if (isCellEmpty(y, x)) {
-                    if (checkAiTurn(y, x, DOT_AI, DOTS_TO_WIN - 1) || checkAiTurn(y, x, DOT_HUMAN, DOTS_TO_WIN - 1)) {
-                        // в первую очередь комп  пытается выиграть, потом блокирует выигрышные ходы игрока с линией в три символа
-                        y_Ai = y;
-                        x_Ai = x;
-                        key = false;
-                        break outerloop;
-                    }
-                }
-            }
-        }
 
-        if (key) {
-            outerloop_2:
+        outerloop:
+        for (int number = DOTS_TO_WIN - 1; number > 0; number--) {
             for (int y = 0; y < fieldSizeY; y++) {
                 for (int x = 0; x < fieldSizeX; x++) {
                     if (isCellEmpty(y, x)) {
-                        if (checkAiTurn(y, x, DOT_AI, DOTS_TO_WIN - 2) || checkAiTurn(y, x, DOT_HUMAN, DOTS_TO_WIN - 2)) {
+                        if (checkAiTurn(y, x, DOT_AI, number) || checkAiTurn(y, x, DOT_HUMAN, number)) {
+                            // сначала проверяем точки на линии длиной DOTS_TO_WIN - 1, если их нет, то линии меньше
                             y_Ai = y;
                             x_Ai = x;
-                            break outerloop_2;
+                            break outerloop;
                         }
                     }
                 }
@@ -143,20 +115,20 @@ public class HomeworkLesson_3_TicTacToe {
         // if можно менять местами, чтобы поменять логику проверки
         if (isCellValid(y, x + 1) && checkSymbHor(y, x + 1, symb) == number)
             return true; // проверяем линию справа от точки
-        if (isCellValid(y - number, x) && checkSymbVer(y - number, x, symb) == number)
-            return true; // проверяем линию сверху от точки
-        if (isCellValid(y + 1, x + 1) && checkSymbDia_1(y + 1, x + 1, symb) == number)
-            return true; // проверяем линию вверх и влево от точки
-        if (isCellValid(y - 1, x + 1) && checkSymbDia_2(y - 1, x + 1, symb) == number)
-            return true; // проверяем значение вверх и вправо от точки
-        if (isCellValid(y, x - number) && checkSymbHor(y, x - number, symb) == number)
-            return true; // проверяем линию слева от точкм
         if (isCellValid(y + 1, x) && checkSymbVer(y + 1, x, symb) == number)
             return true; // проверяем линию снизу от точки
+        if (isCellValid(y - number, x) && checkSymbVer(y - number, x, symb) == number)
+            return true; // проверяем линию сверху от точки
+        if (isCellValid(y, x - number) && checkSymbHor(y, x - number, symb) == number)
+            return true; // проверяем линию слева от точки
+        if (isCellValid(y + 1, x + 1) && checkSymbDia_1(y + 1, x + 1, symb) == number)
+            return true; // проверяем диагональ вниз и вправо от точки
         if (isCellValid(y - number, x - number) && checkSymbDia_1(y - number, x - number, symb) == number)
-            return true; // проверяем линию вниз и вправо от точки
+            return true; // проверяем линию вверх и влево от точки
         if (isCellValid(y - number, x + number) && checkSymbDia_2(y - number, x + number, symb) == number)
-            return true; // проверяем значение вниз и влеыо от точки
+            return true; // проверяем диагональ вверх и вправо от точки
+        if (isCellValid(y + 1, x - 1) && checkSymbDia_2(y + 1, x - 1, symb) == number)
+            return true; // проверяем значение вниз и влево от точки
         return false;
     }
 
@@ -178,7 +150,6 @@ public class HomeworkLesson_3_TicTacToe {
         }
         return false;
     }
-
 
     public static int checkSymbHor(int y, int x, char symb) {
         int counter = 0;
@@ -224,35 +195,4 @@ public class HomeworkLesson_3_TicTacToe {
         }
         return true;
     }
-
-    // первый вариант через рекурсивный метод
-//    public static boolean checkWinHor(int y, int x, int counter) {
-//        if (!isCellValid(y, x + 1)) return false; //проверяем чтобы следующее значение не вышло за переделы поля
-//        else if (field[y][x] != field[y][x + 1]) return false;
-//        else if (counter == DOTS_TO_WIN - 1) return true;
-//        else return checkWinHor(y, x + 1, counter + 1);
-//    }
-//
-//    public static boolean checkWinVer(int y, int x, int counter) {
-//        if (!isCellValid(y + 1, x)) return false; //проверяем чтобы следующее значение не вышло за переделы поля
-//        else if (field[y][x] != field[y + 1][x]) return false;
-//        else if (counter == DOTS_TO_WIN - 1) return true;
-//        else return checkWinVer(y + 1, x, counter + 1);
-//    }
-//
-//    public static boolean checkWinDia_1(int y, int x, int counter) {
-//        if (!isCellValid(y + 1, x + 1)) return false; //проверяем чтобы следующее значение не вышло за переделы поля
-//        else if (field[y][x] != field[y + 1][x + 1]) return false;
-//        else if (counter == DOTS_TO_WIN - 1) return true;
-//        else return checkWinDia_1(y + 1, x + 1, counter + 1);
-//    }
-//
-//    public static boolean checkWinDia_2(int y, int x, int counter) {
-//        if (!isCellValid(y + 1, x - 1)) return false; //проверяем чтобы следующее значение не вышло за переделы поля
-//        else if (field[y][x] != field[y + 1][x - 1]) return false;
-//        else if (counter == DOTS_TO_WIN - 1) return true;
-//        else return checkWinDia_2(y + 1, x - 1, counter + 1);
-//    }
-
-
 }
