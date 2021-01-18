@@ -104,15 +104,16 @@ public class HomeworkLesson_3_TicTacToe {
 
 
     public static void aiTurn() {
-        boolean key = false;
+        boolean key = true;
         outerloop:
         for (int y = 0; y < fieldSizeY; y++) {
             for (int x = 0; x < fieldSizeX; x++) {
                 if (isCellEmpty(y, x)) {
-                    if (checkAiTurn(y, x, DOT_AI, DOTS_TO_WIN - 2) || checkAiTurn(y, x, DOT_HUMAN, DOTS_TO_WIN - 2)) {
+                    if (checkAiTurn(y, x, DOT_AI, DOTS_TO_WIN - 1) || checkAiTurn(y, x, DOT_HUMAN, DOTS_TO_WIN - 1)) {
+                        // в первую очередь комп  пытается выиграть, потом блокирует выигрышные ходы игрока с линией в три символа
                         y_Ai = y;
                         x_Ai = x;
-                        key = true;
+                        key = false;
                         break outerloop;
                     }
                 }
@@ -124,8 +125,7 @@ public class HomeworkLesson_3_TicTacToe {
             for (int y = 0; y < fieldSizeY; y++) {
                 for (int x = 0; x < fieldSizeX; x++) {
                     if (isCellEmpty(y, x)) {
-                        if (checkAiTurn(y, x, DOT_AI, DOTS_TO_WIN - 1) || checkAiTurn(y, x, DOT_HUMAN, DOTS_TO_WIN - 1)) {
-                            // в первую очередь комп  пытается выиграть, потом блокирует выигрышные ходы игрока с линией в три символа
+                        if (checkAiTurn(y, x, DOT_AI, DOTS_TO_WIN - 2) || checkAiTurn(y, x, DOT_HUMAN, DOTS_TO_WIN - 2)) {
                             y_Ai = y;
                             x_Ai = x;
                             break outerloop_2;
