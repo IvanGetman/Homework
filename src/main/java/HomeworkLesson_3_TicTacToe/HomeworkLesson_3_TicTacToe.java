@@ -115,19 +115,19 @@ public class HomeworkLesson_3_TicTacToe {
                         x_Ai = x;
                         break outerloop;
                     }
-                    if (checkAiTurn(y, x, DOT_AI, 3)) {
+                    else if (checkAiTurn(y, x, DOT_AI, 3)) {
                         // потом пытается выиграть, если есть линия в три символа
                         y_Ai = y;
                         x_Ai = x;
                         break outerloop;
                     }
-                    if (checkAiTurn(y, x, DOT_AI, 2)) {
+                    else if (checkAiTurn(y, x, DOT_AI, 2)) {
                         // комп продлевает линию в два символа
                         y_Ai = y;
                         x_Ai = x;
                         break outerloop;
                     }
-                    if (checkAiTurn(y, x, DOT_HUMAN, 2)) {
+                    else if (checkAiTurn(y, x, DOT_HUMAN, 2)) {
                         // комп блокирует ходы игрока с линией в два символа
                         y_Ai = y;
                         x_Ai = x;
@@ -158,7 +158,7 @@ public class HomeworkLesson_3_TicTacToe {
         if (isCellValid(y + 1, x) && checkSymbVer(y + 1, x, symb) == number)
             return true; // проверяем линию снизу от точки
         if (isCellValid(y - number, x - number) && checkSymbDia_1(y - number, x - number, symb) == number)
-            return true; // проверяем линию вних и вправо от точки
+            return true; // проверяем линию вниз и вправо от точки
         if (isCellValid(y - number, x + number) && checkSymbDia_2(y - number, x + number, symb) == number)
             return true; // проверяем значение вниз и влеыо от точки
         return false;
