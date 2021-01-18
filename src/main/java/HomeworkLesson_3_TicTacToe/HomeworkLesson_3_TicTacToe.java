@@ -104,40 +104,36 @@ public class HomeworkLesson_3_TicTacToe {
 
 
     public static void aiTurn() {
-
+        boolean key = false;
         outerloop:
         for (int y = 0; y < fieldSizeY; y++) {
             for (int x = 0; x < fieldSizeX; x++) {
                 if (isCellEmpty(y, x)) {
-                    if (checkAiTurn(y, x, DOT_HUMAN, 3)) {
-                        // в первую очередь комп блокирует ходы игрока с линией в три символа
+                    if (checkAiTurn(y, x, DOT_AI, DOTS_TO_WIN - 2) || checkAiTurn(y, x, DOT_HUMAN, DOTS_TO_WIN - 2)) {
                         y_Ai = y;
                         x_Ai = x;
-                        break outerloop;
-                    }
-                    else if (checkAiTurn(y, x, DOT_AI, 3)) {
-                        // потом пытается выиграть, если есть линия в три символа
-                        y_Ai = y;
-                        x_Ai = x;
-                        break outerloop;
-                    }
-                    else if (checkAiTurn(y, x, DOT_AI, 2)) {
-                        // комп продлевает линию в два символа
-                        y_Ai = y;
-                        x_Ai = x;
-                        break outerloop;
-                    }
-                    else if (checkAiTurn(y, x, DOT_HUMAN, 2)) {
-                        // комп блокирует ходы игрока с линией в два символа
-                        y_Ai = y;
-                        x_Ai = x;
+                        key = true;
                         break outerloop;
                     }
                 }
             }
         }
 
-
+        if (key) {
+            outerloop_2:
+            for (int y = 0; y < fieldSizeY; y++) {
+                for (int x = 0; x < fieldSizeX; x++) {
+                    if (isCellEmpty(y, x)) {
+                        if (checkAiTurn(y, x, DOT_AI, DOTS_TO_WIN - 1) || checkAiTurn(y, x, DOT_HUMAN, DOTS_TO_WIN - 1)) {
+                            // в первую очередь комп  пытается выиграть, потом блокирует выигрышные ходы игрока с линией в три символа
+                            y_Ai = y;
+                            x_Ai = x;
+                            break outerloop_2;
+                        }
+                    }
+                }
+            }
+        }
 
         System.out.println("Координаты хода компьютера в формате X Y: " + (x_Ai + 1) + " " + (y_Ai + 1));
         field[y_Ai][x_Ai] = DOT_AI;
