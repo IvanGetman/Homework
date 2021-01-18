@@ -19,13 +19,20 @@ public class HomeworkLesson_3_TicTacToe {
     public static final int DOTS_TO_WIN = 4;
     public static final char DOT_HUMAN = 'X';
     public static final char DOT_AI = 'O';
-    public static final char DOT_EMTY = '.';
+    public static final char DOT_EMPTY = '.';
     public static Scanner scanner = new Scanner(System.in);
     public static Random random = new Random();
+    public static int x_Ai;
+    public static int y_Ai;
 
     public static void main(String[] args) {
         initField();
         printField();
+        humanTurn();
+        printField();
+        aiFirstTurn();
+        printField();
+
         while (true) {
             humanTurn();
             printField();
@@ -54,7 +61,7 @@ public class HomeworkLesson_3_TicTacToe {
         field = new char[fieldSizeY][fieldSizeX];
         for (int y = 0; y < fieldSizeY; y++) {
             for (int x = 0; x < fieldSizeX; x++) {
-                field[y][x] = DOT_EMTY;
+                field[y][x] = DOT_EMPTY;
             }
         }
     }
@@ -81,87 +88,175 @@ public class HomeworkLesson_3_TicTacToe {
             System.out.printf("Введите координаты хода через пробел в формате X Y, от 1 до %d для X, от 1 до %d для Y: ", fieldSizeX, fieldSizeY);
             x = scanner.nextInt() - 1;
             y = scanner.nextInt() - 1;
-        } while (!isCellValid(x, y) || !isCellEmpty(x, y));
+        } while (!isCellValid(y, x) || !isCellEmpty(y, x));
         field[y][x] = DOT_HUMAN;
 
     }
 
-    public static void aiTurn() {
-        int x;
-        int y;
+    public static void aiFirstTurn() {
         do {
-            x = random.nextInt(fieldSizeX);
-            y = random.nextInt(fieldSizeY);
-        } while (!isCellEmpty(x, y));
-        System.out.println("Координаты хода компьютера в формате X Y: " + (x + 1) + " " + (y + 1));
-        field[y][x] = DOT_AI;
+            x_Ai = random.nextInt(fieldSizeX);
+            y_Ai = random.nextInt(fieldSizeY);
+        } while (!isCellEmpty(y_Ai, x_Ai));
+        System.out.println("Координаты хода компьютера в формате X Y: " + (x_Ai + 1) + " " + (y_Ai + 1));
+        field[y_Ai][x_Ai] = DOT_AI;
     }
 
-    public static boolean isCellValid(int x, int y) {
+
+    public static void aiTurn() {
+
+        outerloop:
+        for (int y = 0; y < fieldSizeY; y++) {
+            for (int x = 0; x < fieldSizeX; x++) {
+                if (isCellEmpty(y, x)) {
+                    if (checkAiTurn(y, x, DOT_HUMAN, 3)) {
+                        // в первую очередь комп блокирует ходы игрока с линией в три символа
+                        y_Ai = y;
+                        x_Ai = x;
+                        break outerloop;
+                    }
+                    if (checkAiTurn(y, x, DOT_AI, 3)) {
+                        // потом пытается выиграть, если есть линия в три символа
+                        y_Ai = y;
+                        x_Ai = x;
+                        break outerloop;
+                    }
+                    if (checkAiTurn(y, x, DOT_AI, 2)) {
+                        // комп продлевает линию в два символа
+                        y_Ai = y;
+                        x_Ai = x;
+                        break outerloop;
+                    }
+                    if (checkAiTurn(y, x, DOT_HUMAN, 2)) {
+                        // комп блокирует ходы игрока с линией в два символа
+                        y_Ai = y;
+                        x_Ai = x;
+                        break outerloop;
+                    }
+                }
+            }
+        }
+
+
+
+        System.out.println("Координаты хода компьютера в формате X Y: " + (x_Ai + 1) + " " + (y_Ai + 1));
+        field[y_Ai][x_Ai] = DOT_AI;
+    }
+
+    public static boolean checkAiTurn(int y, int x, char symb, int number) {
+        // if можно менять местами, чтобы поменять логику проверки
+        if (isCellValid(y, x + 1) && checkSymbHor(y, x + 1, symb) == number)
+            return true; // проверяем линию справа от точки
+        if (isCellValid(y - number, x) && checkSymbVer(y - number, x, symb) == number)
+            return true; // проверяем линию сверху от точки
+        if (isCellValid(y + 1, x + 1) && checkSymbDia_1(y + 1, x + 1, symb) == number)
+            return true; // проверяем линию вверх и влево от точки
+        if (isCellValid(y - 1, x + 1) && checkSymbDia_2(y - 1, x + 1, symb) == number)
+            return true; // проверяем значение вверх и вправо от точки
+        if (isCellValid(y, x - number) && checkSymbHor(y, x - number, symb) == number)
+            return true; // проверяем линию слева от точкм
+        if (isCellValid(y + 1, x) && checkSymbVer(y + 1, x, symb) == number)
+            return true; // проверяем линию снизу от точки
+        if (isCellValid(y - number, x - number) && checkSymbDia_1(y - number, x - number, symb) == number)
+            return true; // проверяем линию вних и вправо от точки
+        if (isCellValid(y - number, x + number) && checkSymbDia_2(y - number, x + number, symb) == number)
+            return true; // проверяем значение вниз и влеыо от точки
+        return false;
+    }
+
+    public static boolean isCellValid(int y, int x) {
         return x >= 0 && x < fieldSizeX && y >= 0 && y < fieldSizeY;
-
     }
 
-    public static boolean isCellEmpty(int x, int y) {
-        return field[y][x] == DOT_EMTY;
+    public static boolean isCellEmpty(int y, int x) {
+        return field[y][x] == DOT_EMPTY;
     }
 
     public static boolean checkWin(char symb) {
-        // hor
-        for (int y = 0; y < fieldSizeY; y++) {
-            for (int x = 0; x <= fieldSizeX - DOTS_TO_WIN; x++) {
-                //дальше координат fieldSizeX - DOTs_TO_WIN линия выйдет за пределы поля
-                if (field[y][x] == symb && checkHor(y, x, 1)) return true;
-            }
-        }
-        // ver
-        for (int x = 0; x < fieldSizeX; x++) {
-            for (int y = 0; y <= fieldSizeY - DOTS_TO_WIN; y++) {
-                if (field[y][x] == symb && checkVer(y, x, 1)) return true;
-            }
-        }
-        // dia
+
         for (int y = 0; y < fieldSizeY; y++) {
             for (int x = 0; x < fieldSizeX; x++) {
-                if (field[y][x] == symb && (checkDia_1(y, x, 1) || checkDia_2(y, x, 1))) return true;
+                if (checkSymbHor(y, x, symb) == DOTS_TO_WIN || checkSymbVer(y, x, symb) == DOTS_TO_WIN || checkSymbDia_1(y, x, symb) == DOTS_TO_WIN || checkSymbDia_2(y, x, symb) == DOTS_TO_WIN)
+                    return true;
             }
         }
         return false;
     }
 
-    public static boolean checkHor(int y, int x, int counter) {
-        if (field[y][x] != field[y][x + 1]) return false;
-        else if (counter == DOTS_TO_WIN - 1) return true;
-        else return checkHor(y, x + 1, counter + 1);
+
+    public static int checkSymbHor(int y, int x, char symb) {
+        int counter = 0;
+        for (; x < fieldSizeX; x++) {
+            if (field[y][x] == symb) counter++;
+            else break;
+        }
+        return counter;
     }
 
-    public static boolean checkVer(int y, int x, int counter) {
-        if (field[y][x] != field[y + 1][x]) return false;
-        else if (counter == DOTS_TO_WIN - 1) return true;
-        else return checkVer(y + 1, x, counter + 1);
+    public static int checkSymbVer(int y, int x, char symb) {
+        int counter = 0;
+        for (; y < fieldSizeX; y++) {
+            if (field[y][x] == symb) counter++;
+            else break;
+        }
+        return counter;
     }
 
-    public static boolean checkDia_1(int y, int x, int counter) {
-        if (!isCellValid(x + 1, y + 1)) return false; //проверяем чтобы следующее значение не вышло за переделы поля
-        else if (field[y][x] != field[y + 1][x + 1]) return false;
-        else if (counter == DOTS_TO_WIN - 1) return true;
-        else return checkDia_1(y + 1, x + 1, counter + 1);
+    public static int checkSymbDia_1(int y, int x, char symb) {
+        int counter = 0;
+        for (; x < fieldSizeX && y < fieldSizeY; x++, y++) {
+            if (field[y][x] == symb) counter++;
+            else break;
+        }
+        return counter;
     }
 
-    public static boolean checkDia_2(int y, int x, int counter) {
-        if (!isCellValid(x - 1, y + 1)) return false;
-        else if (field[y][x] != field[y + 1][x - 1]) return false;
-        else if (counter == DOTS_TO_WIN - 1) return true;
-        else return checkDia_2(y + 1, x - 1, counter + 1);
+    public static int checkSymbDia_2(int y, int x, char symb) {
+        int counter = 0;
+        for (; x > 0 && x < fieldSizeX && y < fieldSizeY; x--, y++) {
+            if (field[y][x] == symb) counter++;
+            else break;
+        }
+        return counter;
     }
 
     public static boolean checkDraw() {
         for (int y = 0; y < fieldSizeY; y++) {
             for (int x = 0; x < fieldSizeX; x++) {
-                if (field[y][x] == DOT_EMTY) return false;
+                if (field[y][x] == DOT_EMPTY) return false;
             }
         }
         return true;
     }
+
+    // первый вариант через рекурсивный метод
+//    public static boolean checkWinHor(int y, int x, int counter) {
+//        if (!isCellValid(y, x + 1)) return false; //проверяем чтобы следующее значение не вышло за переделы поля
+//        else if (field[y][x] != field[y][x + 1]) return false;
+//        else if (counter == DOTS_TO_WIN - 1) return true;
+//        else return checkWinHor(y, x + 1, counter + 1);
+//    }
+//
+//    public static boolean checkWinVer(int y, int x, int counter) {
+//        if (!isCellValid(y + 1, x)) return false; //проверяем чтобы следующее значение не вышло за переделы поля
+//        else if (field[y][x] != field[y + 1][x]) return false;
+//        else if (counter == DOTS_TO_WIN - 1) return true;
+//        else return checkWinVer(y + 1, x, counter + 1);
+//    }
+//
+//    public static boolean checkWinDia_1(int y, int x, int counter) {
+//        if (!isCellValid(y + 1, x + 1)) return false; //проверяем чтобы следующее значение не вышло за переделы поля
+//        else if (field[y][x] != field[y + 1][x + 1]) return false;
+//        else if (counter == DOTS_TO_WIN - 1) return true;
+//        else return checkWinDia_1(y + 1, x + 1, counter + 1);
+//    }
+//
+//    public static boolean checkWinDia_2(int y, int x, int counter) {
+//        if (!isCellValid(y + 1, x - 1)) return false; //проверяем чтобы следующее значение не вышло за переделы поля
+//        else if (field[y][x] != field[y + 1][x - 1]) return false;
+//        else if (counter == DOTS_TO_WIN - 1) return true;
+//        else return checkWinDia_2(y + 1, x - 1, counter + 1);
+//    }
+
 
 }
