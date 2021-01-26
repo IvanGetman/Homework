@@ -162,7 +162,7 @@ public class HomeworkLesson_3_TicTacToe {
 
     public static int checkSymbVer(int y, int x, char symb) {
         int counter = 0;
-        for (; y < fieldSizeX; y++) {
+        for (; y < fieldSizeY; y++) {
             if (field[y][x] == symb) counter++;
             else break;
         }
