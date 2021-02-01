@@ -8,14 +8,20 @@ package HomeworkLesson_7;
  * @version 1.0
  * Created 27.01.2021
  */
-public class RunTrack extends Obstruction{
-    private int length;
+public class RunTrack extends Obstruction {
+    private final int length;
 
     public RunTrack(int length) {
         this.length = length;
     }
 
-    public int getLength() {
-        return length;
+    @Override
+    int getLength() {
+        return this.length;
+    }
+
+    @Override
+    float getAltitude() {
+        return 0;
     }
 }

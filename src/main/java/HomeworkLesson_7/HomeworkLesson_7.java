@@ -17,20 +17,23 @@ public class HomeworkLesson_7 {
                 new Cat("Борис", 300, 0.5f),
                 new Cat("Мурзик", 550, 0.7f),
                 new Robot("R2D2", 5000, 0.1f),
-                new Robot("Валли", 3500, 0.2f),
+                new Robot("Валли", 3500, 2.2f),
         };
 
         Obstruction[] obstructions = {
                 new Wall(0.1f),
                 new RunTrack(300),
                 new Wall(0.5f),
+                new RunTrack(3000),
                 new RunTrack(300),
                 new Wall(0.5f),
-                new RunTrack(3000),
         };
 
         for (RunJump p : participants) {
-
+            for (Obstruction o : obstructions) {
+                p.runJump(o.getLength(), o.getAltitude());
+                if (o.getAltitude() > p.getMaxJump() || o.getLength() > p.getMaxRun()) break;
+            }
         }
     }
 

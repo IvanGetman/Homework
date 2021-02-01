@@ -8,14 +8,21 @@ package HomeworkLesson_7;
  * @version 1.0
  * Created 27.01.2021
  */
-public class Wall extends Obstruction{
-    private float altitude;
+public class Wall extends Obstruction {
+    private final float altitude;
 
     public Wall(float altitude) {
         this.altitude = altitude;
     }
 
-    public float getAltitude() {
-        return altitude;
+
+    @Override
+    int getLength() {
+        return 0;
+    }
+
+    @Override
+    float getAltitude() {
+        return this.altitude;
     }
 }

@@ -8,6 +8,8 @@ package HomeworkLesson_7;
  * @version 1.0
  * Created 27.01.2021
  */
-public class Obstruction {
+public abstract class Obstruction {
 
+    abstract int getLength();
+    abstract float getAltitude();
 }
