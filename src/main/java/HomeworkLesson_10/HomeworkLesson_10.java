@@ -26,7 +26,17 @@ public class HomeworkLesson_10 {
         System.out.println("Уникальные слова: " + uniqueWords);
         counterUniqueWords(strings, uniqueWords);
 
+        Phonebook phonebook = new Phonebook();
+        phonebook.add("Иванов", 51425);
+        phonebook.add("Иванов", 51426);
+        phonebook.add("Иванов", 51427);
+        phonebook.add("Сергеев", 51428);
+        phonebook.add("Сергеев", 51429);
+        phonebook.add("Петров", 51430);
+        phonebook.add("Петров", 51431);
 
+        System.out.println(phonebook.getPhonebook());
+        System.out.println(phonebook.get("Петров"));
     }
 
     private static void counterUniqueWords(String[] strings, HashSet<String> uniqueWords) {
