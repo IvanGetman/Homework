@@ -19,7 +19,7 @@ public class HomeworkLesson_11 {
         changeElements(array, 1, 9);
         System.out.println(Arrays.toString(array));
         convertArrayToList(array);
-
+        System.out.println("test github");
     }
 
     public static String[] changeElements(String[] arr, int numElem1, int numElem2) {
