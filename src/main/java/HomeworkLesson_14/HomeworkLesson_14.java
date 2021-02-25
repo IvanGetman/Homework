@@ -27,6 +27,7 @@ public class HomeworkLesson_14 {
             if (arr[i] != 4) {
                 arrayList.add(0, arr[i]);
             } else break;
+
         }
         if (arr.length == arrayList.size()) throw new MyArrayException("В массиве отсутствует цифра 4");
         Integer[] cutArray = new Integer[arrayList.size()];

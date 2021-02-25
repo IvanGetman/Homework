@@ -26,6 +26,7 @@ public class TestHomeworkLesson_14 {
         return Arrays.asList(new Integer[][]{
                 {Arrays.asList(0, 2, 3, 52, 3, 23, 4, 5, 5), Arrays.asList(5, 5)},
                 {Arrays.asList(0, 2, 4, 52, 3, 23, 5, 5, 5), Arrays.asList(52, 3, 23, 5, 5, 5)},
+
         });
     }
 
